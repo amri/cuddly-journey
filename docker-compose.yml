@@ -1,0 +1,27 @@
+version: '3.1'
+
+services:
+  mongodb:
+    container_name: mongodb
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - ~/apps/mongo:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=tester
+      - MONGO_INITDB_ROOT_PASSWORD=password
+  app:
+    container_name: api
+    image: notification:latest
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: node dist/main.js
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/home/node
+      - /home/node/node_modules
+    restart: unless-stopped
